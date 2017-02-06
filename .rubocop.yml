@@ -6,3 +6,5 @@ Style/EmptyLinesAroundModuleBody:
   Enabled: false
 Style/EmptyLinesAroundClassBody:
   Enabled: false
+Style/NumericLiterals:
+  Enabled: false

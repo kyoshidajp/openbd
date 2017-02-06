@@ -4,6 +4,8 @@ require 'json'
 
 module Openbd
 
+  class RequestError < StandardError; end
+
   END_POINT = 'https://api.openbd.jp/v1'
 
   class Client
@@ -36,9 +38,21 @@ module Openbd
       return unless [:get, :post].include?(method)
 
       url = "#{END_POINT}/get"
-      q = { isbn: isbn }
+      q = { isbn: isbn_param(isbn) }
       resp = client.send(method, url, q)
       body(resp)
+    end
+
+    def isbn_param(value)
+      isbns = if value.instance_of?(String)
+                value.split(',')
+              elsif value.instance_of?(Array)
+                value
+              else
+                raise Openbd::RequestError,
+                      "Invalid type of param: #{value.class}(#{value})"
+              end
+      isbns.join(',')
     end
   end
 end

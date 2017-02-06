@@ -46,36 +46,77 @@ describe Openbd do
   end
 
   describe '.get' do
-    context 'single ISBN' do
-      let(:response) { client.get('978-4-7808-0204-7') }
-      let(:book) { response[0] }
-
-      it 'return single book data' do
-        expect(response.size).to eq 1
-      end
-
-      it_should_behave_like 'items'
-    end
-
-    context 'multi ISBN' do
-      let(:response) { client.get('4-06-2630869,978-4-06-2144490') }
-
-      it 'return single book data' do
-        expect(response.size).to eq 2
-      end
-
-      it_should_behave_like 'items' do
+    context 'with String param' do
+      context 'of single ISBN' do
+        let(:response) { client.get('978-4-7808-0204-7') }
         let(:book) { response[0] }
+
+        it 'return single book data' do
+          expect(response.size).to eq 1
+        end
+
+        it_should_behave_like 'items'
       end
 
-      it_should_behave_like 'items' do
-        let(:book) { response[1] }
+      context 'of multi ISBN' do
+        let(:response) { client.get('4-06-2630869,978-4-06-2144490') }
+
+        it 'return single book data' do
+          expect(response.size).to eq 2
+        end
+
+        it_should_behave_like 'items' do
+          let(:book) { response[0] }
+        end
+
+        it_should_behave_like 'items' do
+          let(:book) { response[1] }
+        end
+      end
+    end
+    context 'with Array param' do
+      context 'of single ISBN' do
+        let(:response) { client.get(['978-4-7808-0204-7']) }
+        let(:book) { response[0] }
+
+        it 'return single book data' do
+          expect(response.size).to eq 1
+        end
+
+        it_should_behave_like 'items'
+      end
+
+      context 'of multi ISBN' do
+        let(:response) { client.get(%w(4-06-2630869 978-4-06-2144490)) }
+
+        it 'return single book data' do
+          expect(response.size).to eq 2
+        end
+
+        it_should_behave_like 'items' do
+          let(:book) { response[0] }
+        end
+
+        it_should_behave_like 'items' do
+          let(:book) { response[1] }
+        end
+      end
+    end
+    context 'with Fixnum param' do
+      it 'raise param type error' do
+        expect { client.get(9784780802047) }
+          .to raise_error(Openbd::RequestError)
+      end
+
+      it 'raise param type error with message' do
+        expect { client.get(9784780802047) }
+          .to raise_error('Invalid type of param: Fixnum(9784780802047)')
       end
     end
   end
 
   describe '.get_big' do
-    context 'single ISBN' do
+    context 'of single ISBN' do
       let(:response) { client.get_big('978-4-7808-0204-7') }
       let(:book) { response[0] }
 
@@ -86,7 +127,7 @@ describe Openbd do
       it_should_behave_like 'items'
     end
 
-    context 'multi ISBN' do
+    context 'of multi ISBN' do
       let(:response) { client.get('4-06-2630869,978-4-06-2144490') }
 
       it 'return single book data' do
