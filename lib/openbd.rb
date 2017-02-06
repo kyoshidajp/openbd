@@ -31,7 +31,7 @@ module Openbd
     end
 
     def body(resp)
-      JSON.load(resp.body)
+      JSON.parse(resp.body)
     end
 
     def _get(isbn, method)
