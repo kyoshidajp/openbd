@@ -36,6 +36,14 @@ client.get('978-4-7808-0204-7')
 client.coverage
 ```
 
+Set `HTTP_SERVER` or `http_server` as Environment Variable if you'd like to access via proxy server.
+
+```
+export HTTP_PROXY=http://user:pass@host:port
+# or
+export http_proxy=http://user:pass@host:port
+```
+
 ## Requirements
 
 - Ruby(MRI) 2.3.0 or higher
