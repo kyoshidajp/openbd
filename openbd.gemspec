@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['kyoshidajp']
   spec.email         = ['claddvd@gmail.com']
 
-  spec.summary       = %q{openBD API}
-  spec.description   = %q{The library provides a wrapper to the openBD API}
+  spec.summary       = 'openBD API'
+  spec.description   = 'The library provides a wrapper to the openBD API'
   spec.homepage      = 'http://github.com/kyoshidajp/openbd'
   spec.license       = 'MIT'
 

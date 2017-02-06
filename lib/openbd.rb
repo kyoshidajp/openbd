@@ -36,7 +36,7 @@ module Openbd
       return unless [:get, :post].include?(method)
 
       url = "#{END_POINT}/get"
-      q = { isbn: isbn}
+      q = { isbn: isbn }
       resp = client.send(method, url, q)
       body(resp)
     end

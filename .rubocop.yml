@@ -1,2 +1,8 @@
-Style/MutableConstant
+Style/MutableConstant:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/EmptyLinesAroundModuleBody:
+  Enabled: false
+Style/EmptyLinesAroundClassBody:
   Enabled: false

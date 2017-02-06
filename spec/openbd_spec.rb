@@ -1,28 +1,27 @@
 require 'spec_helper'
 
 describe Openbd do
-
   before do
     # single ISBN when get method
-    stub_request(:get, /^#{Openbd::END_POINT}\/get\?[^,]+$/)
+    stub_request(:get, %r{^#{Openbd::END_POINT}/get\?[^,]+$})
       .to_return(body: File.new('spec/files/get_single.json').read)
 
     # multi ISBN when get method
-    stub_request(:get, /^#{Openbd::END_POINT}\/get\?.+,.+$/)
+    stub_request(:get, %r{^#{Openbd::END_POINT}\/get\?.+,.+$})
       .to_return(body: File.new('spec/files/get_multi.json').read)
 
     # single ISBN when post method
-    stub_request(:post, /^#{Openbd::END_POINT}\/get$/)
+    stub_request(:post, %r{^#{Openbd::END_POINT}\/get$})
       .with(body: { isbn: /[^,]+/ })
       .to_return(body: File.new('spec/files/get_single.json').read)
 
     # multi ISBN when post method
-    stub_request(:post, /^#{Openbd::END_POINT}\/get$/)
+    stub_request(:post, %r{^#{Openbd::END_POINT}\/get$})
       .with(body: { isbn: /.+,.+/ })
       .to_return(body: File.new('spec/files/get_multi.json').read)
 
     # coverage
-    stub_request(:get, /^#{Openbd::END_POINT}\/coverage$/)
+    stub_request(:get, %r{^#{Openbd::END_POINT}\/coverage$})
       .to_return(body: File.new('spec/files/coverage.json').read)
   end
 
@@ -47,7 +46,6 @@ describe Openbd do
   end
 
   describe '.get' do
-
     context 'single ISBN' do
       let(:response) { client.get('978-4-7808-0204-7') }
       let(:book) { response[0] }
@@ -77,7 +75,6 @@ describe Openbd do
   end
 
   describe '.get_big' do
-
     context 'single ISBN' do
       let(:response) { client.get_big('978-4-7808-0204-7') }
       let(:book) { response[0] }
@@ -107,7 +104,6 @@ describe Openbd do
   end
 
   describe '.coverage' do
-
     let(:response) { client.coverage }
 
     it 'return onix items' do
