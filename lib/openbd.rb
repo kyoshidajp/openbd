@@ -1,6 +1,6 @@
 require 'openbd/version'
 require 'httpclient'
-require 'multi_json'
+require 'json'
 
 module Openbd
 
@@ -29,7 +29,7 @@ module Openbd
     end
 
     def body(resp)
-      MultiJson.load(resp.body)
+      JSON.load(resp.body)
     end
 
     def _get(isbn, method)
