@@ -1,5 +1,9 @@
 # Openbd
 
+[![Gem Version](https://badge.fury.io/rb/openbd.svg)](https://badge.fury.io/rb/openbd) [![Build Status](https://travis-ci.org/kyoshidajp/openbd.svg?branch=master)](https://travis-ci.org/kyoshidajp/openbd)
+
+The Ruby library provides a wrapper to the [openBD API](https://openbd.jp/).
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -31,6 +35,10 @@ client.get('978-4-7808-0204-7')
 # coverage
 client.coverage
 ```
+
+## Requirements
+
+- Ruby(MRI) 2.3.0 or higher
 
 ## License
 
