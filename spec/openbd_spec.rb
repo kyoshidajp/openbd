@@ -109,8 +109,9 @@ describe Openbd do
       end
 
       it 'raise param type error with message' do
+        num_type = 9784780802047.class
         expect { client.get(9784780802047) }
-          .to raise_error('Invalid type of param: Fixnum(9784780802047)')
+          .to raise_error("Invalid type of param: #{num_type}(9784780802047)")
       end
     end
   end
