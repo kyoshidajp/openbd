@@ -1,3 +1,8 @@
+AllCops:
+  Excludes:
+    - spec/*.rb
+    - 'vendor/**/*'
+
 Style/MutableConstant:
   Enabled: false
 Style/Documentation:
