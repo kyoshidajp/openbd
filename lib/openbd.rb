@@ -20,15 +20,15 @@ module Openbd
 
     def coverage
       url = "#{END_POINT}/coverage"
-      resp = client.get(url)
+      resp = httpclient.get(url)
       body(resp)
     end
 
-    private
-
-    def client
-      @client ||= HTTPClient.new
+    def httpclient
+      @httpclient ||= HTTPClient.new
     end
+
+    private
 
     def body(resp)
       JSON.parse(resp.body)
@@ -39,7 +39,7 @@ module Openbd
 
       url = "#{END_POINT}/get"
       q = { isbn: isbn_param(isbn) }
-      resp = client.send(method, url, q)
+      resp = httpclient.send(method, url, q)
       body(resp)
     end
 
