@@ -31,22 +31,64 @@ client = Openbd::Client.new
 
 # get
 client.get('978-4-7808-0204-7')
+client.get('4-06-2630869,978-4-06-2144490')
+client.get(['4-06-2630869', '978-4-06-2144490'])
+
+# get less than 10,000 ISBNs 
+isbns.size        # => 9,999
+client.get(isbns)
+# raise Error if over 10,000 ISBNs
+isbns.size        # => 10,001
+client.get(isbns) # => Param limit exceeded.
 
 # coverage
 client.coverage
 ```
 
-Set `HTTP_SERVER` or `http_server` as Environment Variable if you'd like to access via proxy server.
+You can ccess [HTTPClient](https://github.com/nahi/httpclient)([doc](http://www.rubydoc.info/gems/httpclient/HTTPClient)). For example:
+
+```rb
+client.httpclient.class # => HTTPClient
+# set debug output device
+client.httplicent.debug_dev = STDOUT
+# set timeout param
+client.connect_timeout = 100
+client.send_timeout    = 100
+client.receive_timeout = 100
+```
+
+## Using proxy
+
+To access resources through HTTP proxy, following methods are available
+
+1. Set Environment Variable
+1. Set `HTTPClient#proxy=(proxy)`
+
+### Set Environment Variable
+
+Set `HTTP_SERVER` or `http_server` as Environment Variable.
 
 ```
 export HTTP_PROXY=http://user:pass@host:port
 # or
-export http_proxy=http://user:pass@host:port
+#export http_proxy=http://user:pass@host:port
+```
+
+### Set `HTTPClient#proxy=(proxy)`
+
+`#httpclient` returns [HTTPClient](http://www.rubydoc.info/gems/httpclient/HTTPClient) instance. 
+
+```rb
+require 'openbd'
+
+client = Openbd::Client.new
+client.httpclient.class # => HTTPClient
+client.httpclient.proxy = 'http://user:pass@host:port'
 ```
 
 ## Requirements
 
-- Ruby(MRI) 2.3.0 or higher
+- Ruby(MRI) 2.2.0 or higher
 
 ## License
 
