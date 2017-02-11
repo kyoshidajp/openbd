@@ -2,27 +2,27 @@ require 'spec_helper'
 
 describe Openbd do
   before do
-    # single ISBN when get method
-    stub_request(:get, %r{^#{Openbd::END_POINT}/get\?[^,]+$})
-      .to_return(body: File.new('spec/files/get_single.json').read)
 
-    # multi ISBN when get method
-    stub_request(:get, %r{^#{Openbd::END_POINT}\/get\?.+,.+$})
-      .to_return(body: File.new('spec/files/get_multi.json').read)
+    class OpenbdFaker < Sinatra::Base
+      get '/v1/get' do
+        isbns = params[:isbn].split(',')
+        raise InvalidParameterError if isbns.size > 1_000
+        json = isbns.size > 1 ? 'get_multi.json' : 'get_single.json'
+        body(File.new("spec/files/#{json}").read)
+      end
 
-    # single ISBN when post method
-    stub_request(:post, %r{^#{Openbd::END_POINT}\/get$})
-      .with(body: { isbn: /[^,]+/ })
-      .to_return(body: File.new('spec/files/get_single.json').read)
+      post '/v1/get' do
+        isbns = params[:isbn].split(',')
+        raise InvalidParameterError if isbns.size > 10_000
+        body(File.new('spec/files/get_multi.json').read)
+      end
 
-    # multi ISBN when post method
-    stub_request(:post, %r{^#{Openbd::END_POINT}\/get$})
-      .with(body: { isbn: /.+,.+/ })
-      .to_return(body: File.new('spec/files/get_multi.json').read)
+      get '/v1/coverage' do
+        body(File.new('spec/files/coverage.json').read)
+      end
+    end
 
-    # coverage
-    stub_request(:get, %r{^#{Openbd::END_POINT}\/coverage$})
-      .to_return(body: File.new('spec/files/coverage.json').read)
+    stub_request(:any, %r{^#{Openbd::END_POINT}}).to_rack(OpenbdFaker)
   end
 
   let(:client) { Openbd::Client.new }
@@ -114,33 +114,24 @@ describe Openbd do
           .to raise_error("Invalid type of param: #{num_type}(9784780802047)")
       end
     end
-  end
-
-  describe '.get_big' do
-    context 'of single ISBN' do
-      let(:response) { client.get_big('978-4-7808-0204-7') }
-      let(:book) { response[0] }
-
-      it 'return single book data' do
-        expect(response.size).to eq 1
+    context 'with 10,000 params' do
+      let(:response) do
+        isbn = (10_001..20_000).to_a.join(',')
+        client.get(isbn)
       end
-
-      it_should_behave_like 'items'
-    end
-
-    context 'of multi ISBN' do
-      let(:response) { client.get('4-06-2630869,978-4-06-2144490') }
-
-      it 'return single book data' do
-        expect(response.size).to eq 2
-      end
-
       it_should_behave_like 'items' do
         let(:book) { response[0] }
       end
-
-      it_should_behave_like 'items' do
-        let(:book) { response[1] }
+    end
+    context 'with 10,001 params' do
+      let(:isbn) { (10_001..20_001).to_a.join(',') }
+      it 'raise param limit exceeded error' do
+        expect { client.get(isbn) }
+          .to raise_error(Openbd::RequestError)
+      end
+      it 'raise param limit exceeded error with message' do
+        expect { client.get(isbn) }
+          .to raise_error('Param limit exceeded.')
       end
     end
   end

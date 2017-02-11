@@ -11,11 +11,12 @@ module Openbd
   class Client
 
     def get(isbn)
-      _get(isbn, :get)
-    end
-
-    def get_big(isbn)
-      _get(isbn, :post)
+      url = "#{END_POINT}/get"
+      isbns = isbn_param(isbn)
+      method = get_method(isbns)
+      q = { isbn: isbns.join(',') }
+      resp = httpclient.send(method, url, q)
+      body(resp)
     end
 
     def coverage
@@ -34,25 +35,23 @@ module Openbd
       JSON.parse(resp.body)
     end
 
-    def _get(isbn, method)
-      return unless [:get, :post].include?(method)
+    def get_method(isbn_num)
+      if isbn_num.size > 10_000
+        raise Openbd::RequestError, 'Param limit exceeded.'
+      end
 
-      url = "#{END_POINT}/get"
-      q = { isbn: isbn_param(isbn) }
-      resp = httpclient.send(method, url, q)
-      body(resp)
+      isbn_num.size > 1_000 ? :post : :get
     end
 
     def isbn_param(value)
-      isbns = if value.instance_of?(String)
-                value.split(',')
-              elsif value.instance_of?(Array)
-                value
-              else
-                raise Openbd::RequestError,
-                      "Invalid type of param: #{value.class}(#{value})"
-              end
-      isbns.join(',')
+      if value.instance_of?(String)
+        value.split(',')
+      elsif value.instance_of?(Array)
+        value
+      else
+        raise Openbd::RequestError,
+              "Invalid type of param: #{value.class}(#{value})"
+      end
     end
   end
 end
