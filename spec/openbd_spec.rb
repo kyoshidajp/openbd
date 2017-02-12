@@ -143,8 +143,12 @@ describe Openbd do
   describe '.coverage' do
     let(:response) { client.coverage }
 
-    it 'return onix items' do
+    it 'return Array' do
       expect(response).to be_a_kind_of(Array)
+    end
+
+    it 'return String of Array' do
+      expect(response.all?{|isbn| isbn.instance_of?(String) }).to be true
     end
   end
   
