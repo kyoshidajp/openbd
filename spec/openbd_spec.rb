@@ -24,6 +24,11 @@ describe Openbd do
       get '/v1/schema' do
         body(File.new('spec/files/schema.json').read)
       end
+
+      get '/v1/notfound/get' do
+        status 404
+        'Not found'
+      end
     end
 
     stub_request(:any, %r{^#{Openbd::END_POINT}}).to_rack(OpenbdFaker)
@@ -136,6 +141,19 @@ describe Openbd do
       it 'raise param limit exceeded error with message' do
         expect { client.get(isbn) }
           .to raise_error('Param limit exceeded.')
+      end
+    end
+    context 'NG response' do
+      let(:client) do
+        c = Openbd::Client.new
+        def c.end_point
+          'https://api.openbd.jp/v1/notfound'
+        end
+        c
+      end
+      it 'raise Openbd::RequestError with message' do
+        expect { client.get('978-4-7808-0204-7') }
+          .to raise_error(Openbd::ResponseError, /^404\nNot found$/)
       end
     end
   end

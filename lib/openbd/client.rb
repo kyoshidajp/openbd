@@ -6,6 +6,9 @@ module Openbd
   # Raised for request error.
   class RequestError < StandardError; end
 
+  # Raised for response error.
+  class ResponseError < StandardError; end
+
   END_POINT = 'https://api.openbd.jp/v1'
 
   # The Client class provides a wrapper to the openBD service
@@ -24,9 +27,10 @@ module Openbd
     #
     # @param [String|Array] isbn ISBN
     # @raise [RequestError] if the request is wrong
+    # @raise [ResponseError] if the response is wrong
     # @return [Hash] Biblio infomation
     def get(isbn)
-      url = "#{END_POINT}/get"
+      url = "#{end_point}/get"
       isbns = isbn_param(isbn)
       method = get_method(isbns)
       q = { isbn: isbns.join(',') }
@@ -36,17 +40,19 @@ module Openbd
 
     # call /coverage
     #
+    # @raise [ResponseError] if the response is wrong
     # @return [Array<String>] List of ISBN
     def coverage
-      url = "#{END_POINT}/coverage"
+      url = "#{end_point}/coverage"
       resp = httpclient.get(url)
       body(resp)
     end
 
     # call /schema
     #
+    # @raise [ResponseError] if the response is wrong
     def schema
-      url ="#{END_POINT}/schema"
+      url ="#{end_point}/schema"
       resp = httpclient.get(url)
       body(resp)
     end
@@ -59,9 +65,15 @@ module Openbd
     end
 
     private
+    
+    def end_point
+      END_POINT
+    end
 
     def body(resp)
-      JSON.parse(resp.body)
+      return JSON.parse(resp.body) if resp.ok?
+
+      raise Openbd::ResponseError, "#{resp.status}\n#{resp.content}"
     end
 
     def get_method(isbn_num)
