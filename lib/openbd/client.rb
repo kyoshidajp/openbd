@@ -43,6 +43,14 @@ module Openbd
       body(resp)
     end
 
+    # call /schema
+    #
+    def schema
+      url ="#{END_POINT}/schema"
+      resp = httpclient.get(url)
+      body(resp)
+    end
+
     # get HTTPClient
     #
     # @return [HTTPClient] HTTPClient

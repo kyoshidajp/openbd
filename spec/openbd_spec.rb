@@ -20,6 +20,10 @@ describe Openbd do
       get '/v1/coverage' do
         body(File.new('spec/files/coverage.json').read)
       end
+
+      get '/v1/schema' do
+        body(File.new('spec/files/schema.json').read)
+      end
     end
 
     stub_request(:any, %r{^#{Openbd::END_POINT}}).to_rack(OpenbdFaker)
@@ -141,6 +145,18 @@ describe Openbd do
 
     it 'return onix items' do
       expect(response).to be_a_kind_of(Array)
+    end
+  end
+  
+  describe '.schema' do
+    let(:response) { client.schema }
+
+    it 'return Hash' do
+      expect(response).to be_a_kind_of(Hash)
+    end
+
+    it 'return $shcema data' do
+      expect(response['$schema']).to eq 'http://json-schema.org/draft-04/schema#'
     end
   end
 end
