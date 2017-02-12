@@ -51,6 +51,7 @@ module Openbd
     # call /schema
     #
     # @raise [ResponseError] if the response is wrong
+    # @return [Hash] schema
     def schema
       url ="#{end_point}/schema"
       resp = httpclient.get(url)
