@@ -6,14 +6,14 @@ describe Openbd do
     class OpenbdFaker < Sinatra::Base
       get '/v1/get' do
         isbns = params[:isbn].split(',')
-        raise InvalidParameterError if isbns.size > 1_000
+        halt 413 if isbns.size > 1_000
         json = isbns.size > 1 ? 'get_multi.json' : 'get_single.json'
         body(File.new("spec/files/#{json}").read)
       end
 
       post '/v1/get' do
         isbns = params[:isbn].split(',')
-        raise InvalidParameterError if isbns.size > 10_000
+        halt 413 if isbns.size > 10_000
         body(File.new('spec/files/get_multi.json').read)
       end
 
@@ -151,7 +151,7 @@ describe Openbd do
       expect(response.all?{|isbn| isbn.instance_of?(String) }).to be true
     end
   end
-  
+
   describe '.schema' do
     let(:response) { client.schema }
 
