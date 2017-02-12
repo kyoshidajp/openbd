@@ -83,6 +83,7 @@ describe Openbd do
         end
       end
     end
+
     context 'with Array param' do
       context 'of single ISBN' do
         let(:response) { client.get(['978-4-7808-0204-7']) }
@@ -111,6 +112,7 @@ describe Openbd do
         end
       end
     end
+
     context 'with Fixnum param' do
       it 'raise param type error' do
         expect { client.get(9784780802047) }
@@ -123,6 +125,7 @@ describe Openbd do
           .to raise_error("Invalid type of param: #{num_type}(9784780802047)")
       end
     end
+
     context 'with 10,000 params' do
       let(:response) do
         isbn = (10_001..20_000).to_a.join(',')
@@ -132,17 +135,15 @@ describe Openbd do
         let(:book) { response[0] }
       end
     end
+
     context 'with 10,001 params' do
       let(:isbn) { (10_001..20_001).to_a.join(',') }
-      it 'raise param limit exceeded error' do
-        expect { client.get(isbn) }
-          .to raise_error(Openbd::RequestError)
-      end
       it 'raise param limit exceeded error with message' do
         expect { client.get(isbn) }
-          .to raise_error('Param limit exceeded.')
+          .to raise_error(Openbd::RequestError, 'Param limit exceeded.')
       end
     end
+
     context 'NG response' do
       let(:client) do
         c = Openbd::Client.new
@@ -151,7 +152,7 @@ describe Openbd do
         end
         c
       end
-      it 'raise Openbd::RequestError with message' do
+      it 'raise Openbd::ResponseError with message' do
         expect { client.get('978-4-7808-0204-7') }
           .to raise_error(Openbd::ResponseError, /^404\nNot found$/)
       end
