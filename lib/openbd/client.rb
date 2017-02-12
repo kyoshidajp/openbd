@@ -53,7 +53,7 @@ module Openbd
     # @raise [ResponseError] if the response is wrong
     # @return [Hash] schema
     def schema
-      url ="#{end_point}/schema"
+      url = "#{end_point}/schema"
       resp = httpclient.get(url)
       body(resp)
     end
@@ -66,7 +66,7 @@ module Openbd
     end
 
     private
-    
+
     def end_point
       END_POINT
     end
