@@ -45,7 +45,7 @@ client.get(isbns) # => Param limit exceeded.
 client.coverage
 ```
 
-You can ccess [HTTPClient](https://github.com/nahi/httpclient)([doc](http://www.rubydoc.info/gems/httpclient/HTTPClient)). For example:
+You can access [HTTPClient](https://github.com/nahi/httpclient)([doc](http://www.rubydoc.info/gems/httpclient/HTTPClient)). For example:
 
 ```rb
 client.httpclient.class # => HTTPClient
@@ -85,6 +85,8 @@ client = Openbd::Client.new
 client.httpclient.class # => HTTPClient
 client.httpclient.proxy = 'http://user:pass@host:port'
 ```
+
+Even if `HTTP_PROXY`(or `http_proxy`) been already set, `.proxy` takes precedence.
 
 ## Requirements
 
